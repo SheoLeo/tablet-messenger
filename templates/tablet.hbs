@@ -11,7 +11,13 @@
         <div class="tablet-contact__content">
           <div class="tablet-contact__top">
             <span class="tablet-contact__name">{{name}}</span>
-            <span class="tablet-contact__time">{{time}}</span>
+            <div class="tablet-contact__meta">
+              {{#if hasUnread}}
+              <span class="tablet-contact__dot" aria-label="Есть непрочитанные сообщения"></span>
+              <span class="tablet-contact__unread">{{unreadCount}}</span>
+              {{/if}}
+              <span class="tablet-contact__time">{{time}}</span>
+            </div>
           </div>
           <div class="tablet-contact__bottom">
             <span class="tablet-contact__status tablet-contact__status--{{status}}">{{status}}</span>
