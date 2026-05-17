@@ -1,32 +1,44 @@
-class TabletMessengerApp extends foundry.applications.api.ApplicationV2 {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+class TabletMessengerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "tablet-messenger-app",
     tag: "section",
     classes: ["tablet-messenger"],
     position: {
-      width: 360,
-      height: "auto"
+      width: 900,
+      height: 620
     },
     window: {
       title: "Tablet"
     }
   };
 
+  static PARTS = {
+    body: {
+      template: "modules/tablet-messenger/templates/tablet.hbs"
+    }
+  };
+
   async _prepareContext() {
     return {
-      message: "Tablet Messenger Loaded"
+      contacts: [
+        { name: "Mara Quinn", status: "online", lastMessage: "Встречаемся у восточных ворот.", time: "10:42", active: true },
+        { name: "Rook Ironhand", status: "away", lastMessage: "Я почти на месте.", time: "09:58" },
+        { name: "Selene Ash", status: "offline", lastMessage: "Проверьте карту руин.", time: "Вчера" },
+        { name: "Bram Tallow", status: "online", lastMessage: "Собрал припасы для отряда.", time: "08:17" }
+      ],
+      activeContact: {
+        name: "Mara Quinn",
+        status: "В сети"
+      },
+      messages: [
+        { author: "Mara Quinn", text: "Ты уже в городе?", time: "10:31", mine: false },
+        { author: "Я", text: "Да, подхожу к рынку.", time: "10:32", mine: true },
+        { author: "Mara Quinn", text: "Отлично. Встречаемся у восточных ворот.", time: "10:42", mine: false },
+        { author: "Я", text: "Принято, буду через пять минут.", time: "10:43", mine: true }
+      ]
     };
-  }
-
-  async _renderHTML(context) {
-    const container = document.createElement("div");
-    container.classList.add("tablet-messenger__content");
-    container.textContent = context.message;
-    return container;
-  }
-
-  _replaceHTML(result, content) {
-    content.replaceChildren(result);
   }
 }
 
