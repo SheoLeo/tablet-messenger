@@ -1,0 +1,20 @@
+{
+  "id": "tablet-messenger",
+  "title": "Tablet Messenger",
+  "description": "Мессенджер-планшет для Pathfinder 2e.",
+  "authors": [
+    {
+      "name": "SheoLeo"
+    }
+  ],
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13"
+  },
+  "scripts": [
+    "scripts/tablet.js"
+  ],
+  "styles": [
+    "styles/tablet.css"
+  ]
+}
