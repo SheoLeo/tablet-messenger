@@ -25,7 +25,7 @@
 
     <div class="tablet-chat__messages">
       {{#each messages}}
-      <article class="tablet-message {{#if mine}}tablet-message--mine{{/if}}">
+      <article class="tablet-message {{#if mine}}tablet-message--mine{{/if}} {{#if isNpc}}tablet-message--npc{{/if}}">
         <p class="tablet-message__sender">{{sender}}</p>
         <p class="tablet-message__text">{{text}}</p>
         <time class="tablet-message__time">{{time}}</time>
@@ -34,6 +34,12 @@
     </div>
 
     <footer class="tablet-chat__composer">
+      {{#if canSendAsNpc}}
+      <select class="tablet-send-as" aria-label="Режим отправки">
+        <option value="player">Я</option>
+        <option value="npc">От имени NPC</option>
+      </select>
+      {{/if}}
       <input class="tablet-input" type="text" placeholder="Введите сообщение" />
       <button class="tablet-send" type="button">Отправить</button>
     </footer>

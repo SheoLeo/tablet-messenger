@@ -88,13 +88,15 @@ class TabletMessengerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const messages = (chatData.histories[activeContact.id] ?? []).map((message) => ({
       ...message,
       mine: message.sender === "Я",
+      isNpc: message.senderType === "npc",
       time: this._formatTimestamp(message.timestamp)
     }));
 
     return {
       contacts,
       activeContact,
-      messages
+      messages,
+      canSendAsNpc: game.user.isGM
     };
   }
 
@@ -126,10 +128,14 @@ class TabletMessengerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     const text = input?.value.trim();
     if (!text) return;
 
+    const asNpc = game.user.isGM && this.element.querySelector(".tablet-send-as")?.value === "npc";
+    const activeContact = DEFAULT_CONTACTS.find((contact) => contact.id === this._activeContactId);
+
     const chatData = this._getChatData();
     const history = chatData.histories[this._activeContactId] ?? [];
     history.push({
-      sender: "Я",
+      sender: asNpc ? activeContact?.name ?? "NPC" : "Я",
+      senderType: asNpc ? "npc" : "player",
       text,
       timestamp: new Date().toISOString()
     });

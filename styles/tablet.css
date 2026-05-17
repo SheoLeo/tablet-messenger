@@ -113,6 +113,14 @@
   background: #2563eb;
 }
 
+.tablet-message--npc {
+  background: #7c3aed;
+}
+
+.tablet-message--mine.tablet-message--npc {
+  align-self: flex-start;
+}
+
 .tablet-message__text {
   margin: 0 0 0.25rem;
 }
@@ -137,6 +145,14 @@
   border: 1px solid #374151;
   background: #0b1220;
   color: #9ca3af;
+}
+
+.tablet-chat__composer .tablet-send-as {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #374151;
+  background: #0b1220;
+  color: #f3f4f6;
 }
 
 .tablet-chat__composer button {
