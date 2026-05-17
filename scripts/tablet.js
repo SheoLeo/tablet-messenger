@@ -2,6 +2,7 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 const MODULE_ID = "tablet-messenger";
 const CHAT_STORAGE_KEY = "chatHistory";
+const UNREAD_STORAGE_KEY = "unreadCounts";
 
 const DEFAULT_CONTACTS = [
   { id: "mara-quinn", name: "Mara Quinn", status: "online" },
@@ -57,6 +58,17 @@ class TabletMessengerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     this._activeContactId = game.settings.get(MODULE_ID, CHAT_STORAGE_KEY).activeContactId || DEFAULT_CONTACTS[0].id;
   }
 
+  _getUnreadCounts() {
+    const stored = game.settings.get(MODULE_ID, UNREAD_STORAGE_KEY);
+    return cloneData(stored ?? {});
+  }
+
+  async _setUnreadCount(contactId, value) {
+    const unreadCounts = this._getUnreadCounts();
+    unreadCounts[contactId] = Math.max(0, Number(value) || 0);
+    await game.settings.set(MODULE_ID, UNREAD_STORAGE_KEY, unreadCounts);
+  }
+
   _getChatData() {
     const stored = game.settings.get(MODULE_ID, CHAT_STORAGE_KEY);
     return {
@@ -75,15 +87,19 @@ class TabletMessengerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext() {
     const chatData = this._getChatData();
     const activeContactId = this._activeContactId || chatData.activeContactId;
+    const unreadCounts = this._getUnreadCounts();
     const contacts = DEFAULT_CONTACTS.map((contact) => {
       const history = chatData.histories[contact.id] ?? [];
       const lastMessage = history.at(-1);
+      const unreadCount = Number(unreadCounts[contact.id] ?? 0);
       return {
         ...contact,
         active: contact.id === activeContactId,
         lastMessage: lastMessage?.text ?? "",
         time: lastMessage ? this._formatTimestamp(lastMessage.timestamp) : "",
-        initials: toInitials(contact.name)
+        initials: toInitials(contact.name),
+        hasUnread: unreadCount > 0,
+        unreadCount
       };
     });
 
@@ -109,6 +125,7 @@ class TabletMessengerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     for (const contactElement of this.element.querySelectorAll(".tablet-contact")) {
       contactElement.addEventListener("click", async () => {
         this._activeContactId = contactElement.dataset.contactId;
+        await this._setUnreadCount(this._activeContactId, 0);
         await game.settings.set(MODULE_ID, CHAT_STORAGE_KEY, {
           ...this._getChatData(),
           activeContactId: this._activeContactId
@@ -147,6 +164,13 @@ class TabletMessengerApp extends HandlebarsApplicationMixin(ApplicationV2) {
     chatData.activeContactId = this._activeContactId;
     await game.settings.set(MODULE_ID, CHAT_STORAGE_KEY, chatData);
 
+    if (asNpc) {
+      const current = this._getUnreadCounts()[this._activeContactId] ?? 0;
+      await this._setUnreadCount(this._activeContactId, Number(current) + 1);
+    } else {
+      await this._setUnreadCount(this._activeContactId, 0);
+    }
+
     input.value = "";
     this.render();
   }
@@ -161,6 +185,13 @@ Hooks.once("init", () => {
       activeContactId: DEFAULT_CONTACTS[0].id,
       histories: cloneData(DEFAULT_CHAT_HISTORY)
     }
+  });
+
+  game.settings.register(MODULE_ID, UNREAD_STORAGE_KEY, {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {}
   });
 });
 
