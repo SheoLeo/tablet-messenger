@@ -4,13 +4,19 @@
     <ul class="tablet-contacts__list">
       {{#each contacts}}
       <li class="tablet-contact {{#if active}}is-active{{/if}}" data-contact-id="{{id}}">
-        <div class="tablet-contact__top">
-          <span class="tablet-contact__name">{{name}}</span>
-          <span class="tablet-contact__time">{{time}}</span>
+        <div class="tablet-contact__avatar-wrap">
+          <span class="tablet-contact__avatar">{{initials}}</span>
+          <span class="tablet-contact__presence tablet-contact__presence--{{status}}" aria-hidden="true"></span>
         </div>
-        <div class="tablet-contact__bottom">
-          <span class="tablet-contact__status tablet-contact__status--{{status}}">{{status}}</span>
-          <span class="tablet-contact__preview">{{lastMessage}}</span>
+        <div class="tablet-contact__content">
+          <div class="tablet-contact__top">
+            <span class="tablet-contact__name">{{name}}</span>
+            <span class="tablet-contact__time">{{time}}</span>
+          </div>
+          <div class="tablet-contact__bottom">
+            <span class="tablet-contact__status tablet-contact__status--{{status}}">{{status}}</span>
+            <span class="tablet-contact__preview">{{lastMessage}}</span>
+          </div>
         </div>
       </li>
       {{/each}}

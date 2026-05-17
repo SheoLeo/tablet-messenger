@@ -30,6 +30,8 @@ const DEFAULT_CHAT_HISTORY = {
 
 const cloneData = (data) => foundry.utils.deepClone(data);
 
+const toInitials = (name) => name.split(/\s+/).filter(Boolean).slice(0,2).map((part) => part[0]?.toUpperCase() ?? "").join("");
+
 class TabletMessengerApp extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "tablet-messenger-app",
@@ -80,7 +82,8 @@ class TabletMessengerApp extends HandlebarsApplicationMixin(ApplicationV2) {
         ...contact,
         active: contact.id === activeContactId,
         lastMessage: lastMessage?.text ?? "",
-        time: lastMessage ? this._formatTimestamp(lastMessage.timestamp) : ""
+        time: lastMessage ? this._formatTimestamp(lastMessage.timestamp) : "",
+        initials: toInitials(contact.name)
       };
     });
 
