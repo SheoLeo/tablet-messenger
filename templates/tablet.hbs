@@ -3,7 +3,7 @@
     <header class="tablet-contacts__header">Контакты</header>
     <ul class="tablet-contacts__list">
       {{#each contacts}}
-      <li class="tablet-contact {{#if active}}is-active{{/if}}">
+      <li class="tablet-contact {{#if active}}is-active{{/if}}" data-contact-id="{{id}}">
         <div class="tablet-contact__top">
           <span class="tablet-contact__name">{{name}}</span>
           <span class="tablet-contact__time">{{time}}</span>
@@ -26,6 +26,7 @@
     <div class="tablet-chat__messages">
       {{#each messages}}
       <article class="tablet-message {{#if mine}}tablet-message--mine{{/if}}">
+        <p class="tablet-message__sender">{{sender}}</p>
         <p class="tablet-message__text">{{text}}</p>
         <time class="tablet-message__time">{{time}}</time>
       </article>
@@ -33,8 +34,8 @@
     </div>
 
     <footer class="tablet-chat__composer">
-      <input type="text" value="Тестовый ввод отключен" readonly />
-      <button type="button" disabled>Отправить</button>
+      <input class="tablet-input" type="text" placeholder="Введите сообщение" />
+      <button class="tablet-send" type="button">Отправить</button>
     </footer>
   </section>
 </div>
